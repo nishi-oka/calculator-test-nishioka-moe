@@ -2,24 +2,35 @@ let display = document.getElementById('display');
 let currentInput = '';
 let operator = '';
 let firstOperand = null;
+let formula = '';
+let resultDisplayed = false;
 
 document.querySelectorAll('.number').forEach(button => {
   button.addEventListener('click', () => {
+		if (resultDisplayed) {
+			currentInput = '';
+      formula = '';
+      resultDisplayed = false;
+    }
     currentInput += button.dataset.number;
-    display.value = currentInput;
+    formula += button.dataset.number;
+		display.value = formula;
   });
 });
 
 document.querySelectorAll('.operator').forEach(button => {
   button.addEventListener('click', () => {
-    if (currentInput === '') return;
+		if (currentInput === '' && !resultDisplayed) return;
     if (firstOperand === null) {
       firstOperand = parseFloat(currentInput);
     } else {
       calculate();
     }
     operator = button.dataset.operator;
+		formula += ` ${operator} `;
+		display.value = formula;
     currentInput = '';
+		resultDisplayed = false;
   });
 });
 
@@ -27,6 +38,8 @@ document.querySelector('.equals').addEventListener('click', () => {
   if (currentInput === '' || firstOperand === null) return;
   calculate();
   operator = '';
+	formula = display.value;
+	resultDisplayed = true;
 });
 
 document.querySelector('.clear').addEventListener('click', () => {
@@ -62,4 +75,6 @@ function clearCalculator() {
   operator = '';
   firstOperand = null;
   display.value = '';
+	formula = display.value;
+	resultDisplayed = false;
 }
